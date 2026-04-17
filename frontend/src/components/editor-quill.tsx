@@ -79,7 +79,6 @@ export function EditorQuill({ value, onChange, placeholder, className }: Props) 
     "underline",
     "strike",
     "list",
-    "bullet",
     "blockquote",
     "link",
     "image",

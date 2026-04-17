@@ -1,24 +1,17 @@
 "use client";
 
-import { useEffect } from "react";
 import { useParams } from "next/navigation";
 import { PostsFeed } from "@/features/posts/posts-feed";
-import { useAppDispatch } from "@/store/hooks";
-import { fetchPosts, resetFeed } from "@/store/slices/posts-slice";
 
 export default function TagPage() {
-  const { tag } = useParams<{ tag: string }>();
-  const dispatch = useAppDispatch();
-
-  useEffect(() => {
-    dispatch(resetFeed());
-    dispatch(fetchPosts({ page: 1, limit: 10, sort: "latest", tag: decodeURIComponent(tag) }));
-  }, [dispatch, tag]);
+  const params = useParams<{ tag: string }>();
+  const raw = typeof params.tag === "string" ? params.tag : params.tag?.[0] ?? "";
+  const tag = decodeURIComponent(raw);
 
   return (
     <div className="space-y-4">
-      <h1 className="text-2xl font-semibold tracking-tight text-foreground">#{decodeURIComponent(tag)}</h1>
-      <PostsFeed />
+      <h1 className="text-2xl font-semibold tracking-tight text-foreground">#{tag}</h1>
+      <PostsFeed tag={tag} />
     </div>
   );
 }

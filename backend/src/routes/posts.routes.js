@@ -9,6 +9,7 @@ const router = express.Router();
 
 router.post('/', requireAuth, asyncHandler(postsController.create));
 router.get('/', optionalAuth, asyncHandler(postsController.list));
+router.get('/tags', optionalAuth, asyncHandler(postsController.listTags));
 router.get('/:idOrSlug/similar', asyncHandler(postsController.similar));
 router.get('/:idOrSlug', optionalAuth, asyncHandler(postsController.getByIdOrSlug));
 router.patch('/:id', requireAuth, asyncHandler(postsController.update));

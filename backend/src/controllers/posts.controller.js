@@ -25,6 +25,11 @@ const postsController = {
     res.json({ items: out, page, limit, total });
   },
 
+  async listTags(req, res) {
+    const items = await postsService.listDistinctTags();
+    res.json({ items });
+  },
+
   async getByIdOrSlug(req, res) {
     const post = await postsService.getPostByIdOrSlug(req.params.idOrSlug);
     if (req.user) {

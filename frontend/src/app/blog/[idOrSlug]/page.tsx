@@ -109,14 +109,6 @@ export default function BlogDetailPage() {
 
         <div className="space-y-2">
           <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
-            {post.category?.slug ? (
-              <Link
-                className="rounded-full border border-border bg-card/80 px-2 py-1 hover:bg-muted"
-                href={`/blog/category/${post.category.slug}`}
-              >
-                {post.category.name}
-              </Link>
-            ) : null}
             <span className="font-medium text-foreground">{post.author?.name}</span>
           </div>
           <h1 className="text-4xl font-semibold leading-tight tracking-tight text-foreground">{post.title}</h1>

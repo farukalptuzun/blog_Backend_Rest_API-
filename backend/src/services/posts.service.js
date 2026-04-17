@@ -38,6 +38,17 @@ async function createPost(authorId, { title, content, tags, published, categoryI
   return doc;
 }
 
+/** Yayınlanmış yazılardaki benzersiz etiketler (alfabetik) */
+async function listDistinctTags() {
+  const rows = await Post.aggregate([
+    { $match: { publishedAt: { $ne: null }, tags: { $exists: true, $ne: [] } } },
+    { $unwind: '$tags' },
+    { $group: { _id: '$tags' } },
+    { $sort: { _id: 1 } }
+  ]);
+  return rows.map((r) => r._id).filter(Boolean);
+}
+
 async function listPosts(query, { skip, limit }) {
   const filter = {};
 
@@ -188,6 +199,7 @@ async function setCover(postId, actor, coverUrl) {
 
 module.exports = {
   createPost,
+  listDistinctTags,
   listPosts,
   getPostByIdOrSlug,
   getSimilarPosts,

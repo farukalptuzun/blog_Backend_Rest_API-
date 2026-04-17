@@ -40,7 +40,7 @@ const initialState: PostsState = {
 
 export const fetchPosts = createAsyncThunk(
   "posts/list",
-  async (params: { page: number; limit: number; sort?: "latest" | "popular"; q?: string; tag?: string; categorySlug?: string }) => {
+  async (params: { page: number; limit: number; sort?: "latest" | "popular"; q?: string; tag?: string }) => {
     const { data } = await api.get<{ items: Post[]; total: number; page: number; limit: number }>("/posts", {
       params,
     });

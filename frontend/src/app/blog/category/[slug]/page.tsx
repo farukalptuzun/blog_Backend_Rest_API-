@@ -1,25 +1,9 @@
-"use client";
+import { redirect } from "next/navigation";
 
-import { useEffect } from "react";
-import { useParams } from "next/navigation";
-import { PostsFeed } from "@/features/posts/posts-feed";
-import { useAppDispatch } from "@/store/hooks";
-import { fetchPosts, resetFeed } from "@/store/slices/posts-slice";
+type Props = { params: Promise<{ slug: string }> };
 
-export default function CategoryPage() {
-  const { slug } = useParams<{ slug: string }>();
-  const dispatch = useAppDispatch();
-
-  useEffect(() => {
-    dispatch(resetFeed());
-    dispatch(fetchPosts({ page: 1, limit: 10, sort: "latest", categorySlug: slug }));
-  }, [dispatch, slug]);
-
-  return (
-    <div className="space-y-4">
-      <h1 className="text-2xl font-semibold tracking-tight text-foreground">Kategori: {slug}</h1>
-      <PostsFeed />
-    </div>
-  );
+/** Eski /blog/category/... adresleri etiket sayfasına yönlendirilir */
+export default async function CategoryToTagRedirect({ params }: Props) {
+  const { slug } = await params;
+  redirect(`/blog/tag/${encodeURIComponent(slug)}`);
 }
-

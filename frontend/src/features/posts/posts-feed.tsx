@@ -5,7 +5,7 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { getBackendOrigin } from "@/lib/api";
-import { fetchPosts } from "@/store/slices/posts-slice";
+import { fetchPosts, resetFeed } from "@/store/slices/posts-slice";
 import { PostLikeButton } from "@/features/posts/post-like-button";
 import { Sparkles } from "lucide-react";
 
@@ -13,16 +13,31 @@ function stripHtml(html: string) {
   return html.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
 }
 
-export function PostsFeed() {
+export type PostsFeedProps = {
+  /** Etiket ile filtre (ör. /blog/tag/js) */
+  tag?: string | null;
+};
+
+export function PostsFeed({ tag }: PostsFeedProps = {}) {
   const dispatch = useAppDispatch();
   const { items, page, limit, hasMore, status } = useAppSelector((s) => s.posts);
   const sentinelRef = useRef<HTMLDivElement | null>(null);
 
   const nextPage = useMemo(() => (page || 1) + 1, [page]);
 
+  const filterKey = useMemo(() => (tag ? `t:${tag}` : "all"), [tag]);
+
   useEffect(() => {
-    dispatch(fetchPosts({ page: 1, limit, sort: "latest" }));
-  }, [dispatch, limit]);
+    dispatch(resetFeed());
+    dispatch(
+      fetchPosts({
+        page: 1,
+        limit,
+        sort: "latest",
+        ...(tag ? { tag } : {}),
+      })
+    );
+  }, [dispatch, filterKey, limit, tag]);
 
   useEffect(() => {
     const node = sentinelRef.current;
@@ -30,14 +45,21 @@ export function PostsFeed() {
     const observer = new IntersectionObserver(
       (entries) => {
         if (entries[0]?.isIntersecting && hasMore && status !== "loading") {
-          dispatch(fetchPosts({ page: nextPage, limit, sort: "latest" }));
+          dispatch(
+            fetchPosts({
+              page: nextPage,
+              limit,
+              sort: "latest",
+              ...(tag ? { tag } : {}),
+            })
+          );
         }
       },
       { rootMargin: "400px" }
     );
     observer.observe(node);
     return () => observer.disconnect();
-  }, [dispatch, hasMore, limit, nextPage, status]);
+  }, [dispatch, hasMore, limit, nextPage, status, tag]);
 
   return (
     <div className="space-y-4">
@@ -56,7 +78,7 @@ export function PostsFeed() {
             aria-label={p.title}
             tabIndex={-1}
           />
-          {/* pointer-events-none: tıklama alttaki yazı linkine gider; kategori/etiket/beğeni için auto */}
+          {/* pointer-events-none: tıklama alttaki yazı linkine gider; etiket/beğeni için auto */}
           <div className="relative z-[1] grid gap-4 p-5 md:grid-cols-[160px_1fr] md:items-start pointer-events-none">
             <div className="relative h-40 overflow-hidden rounded-2xl border border-border bg-gradient-to-br from-muted to-card md:h-28">
               {p.coverImageUrl ? (
@@ -80,18 +102,6 @@ export function PostsFeed() {
                 <span>{new Date(p.createdAt).toLocaleDateString("tr-TR")}</span>
                 <span>•</span>
                 <span>{p.viewCount ?? 0} görüntülenme</span>
-                {p.category?.slug ? (
-                  <>
-                    <span>•</span>
-                    <Link
-                      className="pointer-events-auto rounded-full border border-border bg-card/80 px-2 py-0.5 hover:bg-muted"
-                      href={`/blog/category/${p.category.slug}`}
-                      onClick={(e) => e.stopPropagation()}
-                    >
-                      {p.category.name}
-                    </Link>
-                  </>
-                ) : null}
               </div>
 
               <h2 className="mt-2 text-lg font-semibold leading-snug tracking-tight">

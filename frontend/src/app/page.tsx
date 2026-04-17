@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { PostsFeed } from "@/features/posts/posts-feed";
 import { PopularPosts } from "@/features/posts/popular-posts";
-import { CategoriesBar } from "@/features/categories/categories-bar";
+import { TagsBar } from "@/features/blog/tags-bar";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, PenLine } from "lucide-react";
 
@@ -22,7 +22,7 @@ export default function Home() {
               Okunabilir, hızlı ve modern bir blog deneyimi.
             </h1>
             <p className="mt-2 text-muted-foreground">
-              Son yazılar, popüler içerikler, kategori/etiket filtreleri ve zengin editör.
+              Son yazılar, popüler içerikler, etiket filtreleri ve zengin editör.
             </p>
             <div className="mt-5 flex flex-wrap gap-2">
               <Link href="/editor/new">
@@ -45,7 +45,7 @@ export default function Home() {
               <div className="font-medium">Hızlı başlangıç</div>
               <ol className="mt-2 list-decimal space-y-1 pl-5 text-muted-foreground">
                 <li>Giriş/Kayıt ol</li>
-                <li>Bir kategori ekle (admin)</li>
+                <li>Yazılarına etiket ver</li>
                 <li>Yeni yazı oluştur</li>
               </ol>
             </div>
@@ -53,7 +53,7 @@ export default function Home() {
         </div>
 
         <div className="relative mt-5">
-          <CategoriesBar />
+          <TagsBar />
         </div>
       </section>
 
