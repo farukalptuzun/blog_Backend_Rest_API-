@@ -1,30 +1,11 @@
 {
-  "name": "blog-rest-api",
+  "name": "blog-monorepo",
   "version": "0.1.0",
   "private": true,
-  "description": "Multi-user blog platform REST API (Express + MongoDB + JWT + Multer)",
-  "main": "src/server.js",
-  "type": "commonjs",
+  "workspaces": ["backend", "frontend"],
   "scripts": {
-    "dev": "nodemon src/server.js",
-    "start": "node src/server.js",
-    "lint": "echo \"No linter configured\""
-  },
-  "dependencies": {
-    "bcryptjs": "^3.0.2",
-    "cors": "^2.8.5",
-    "dotenv": "^16.6.1",
-    "express": "^4.21.2",
-    "express-rate-limit": "^7.5.0",
-    "helmet": "^7.2.0",
-    "jsonwebtoken": "^9.0.2",
-    "mongoose": "^8.18.0",
-    "morgan": "^1.10.0",
-    "multer": "^1.4.5-lts.2",
-    "zod": "^3.25.76"
-  },
-  "devDependencies": {
-    "nodemon": "^3.1.10"
+    "dev:backend": "npm --workspace backend run dev",
+    "start:backend": "npm --workspace backend start"
   },
   "engines": {
     "node": ">=18"
