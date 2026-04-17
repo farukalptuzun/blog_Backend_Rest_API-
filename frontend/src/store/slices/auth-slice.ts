@@ -4,6 +4,7 @@ import { api } from "@/lib/api";
 export type User = {
   _id: string;
   email: string;
+  username?: string;
   name: string;
   bio?: string;
   avatarUrl?: string;
@@ -27,8 +28,12 @@ export const fetchMe = createAsyncThunk("auth/me", async () => {
 
 export const login = createAsyncThunk(
   "auth/login",
-  async (payload: { email: string; password: string }) => {
-    const { data } = await api.post<{ user: User; accessToken: string }>("/auth/login", payload);
+  async (payload: { email?: string; username?: string; password: string }) => {
+    const body =
+      payload.username != null && String(payload.username).trim() !== ""
+        ? { username: String(payload.username).trim(), password: payload.password }
+        : { email: payload.email ?? "", password: payload.password };
+    const { data } = await api.post<{ user: User; accessToken: string }>("/auth/login", body);
     if (typeof window !== "undefined") {
       window.localStorage.setItem("accessToken", data.accessToken);
     }

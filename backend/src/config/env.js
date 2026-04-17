@@ -16,7 +16,9 @@ const env = {
   jwtAccessSecret: required('JWT_ACCESS_SECRET'),
   jwtAccessExpiresIn: process.env.JWT_ACCESS_EXPIRES_IN || '7d',
   corsOrigin: process.env.CORS_ORIGIN || '*',
-  uploadDir: process.env.UPLOAD_DIR || 'uploads'
+  uploadDir: process.env.UPLOAD_DIR || 'uploads',
+  /** `ADMIN_BOOTSTRAP=0` ise varsayılan admin kullanıcı oluşturma/güncelleme çalışmaz */
+  adminBootstrap: process.env.ADMIN_BOOTSTRAP !== '0'
 };
 
 module.exports = { env };

@@ -5,6 +5,7 @@ import { useParams } from "next/navigation";
 import Link from "next/link";
 import { api, getBackendOrigin } from "@/lib/api";
 import { PostLikeButton } from "@/features/posts/post-like-button";
+import { PostComments } from "@/features/comments/post-comments";
 import { CalendarDays, Eye } from "lucide-react";
 
 type Post = {
@@ -158,6 +159,8 @@ export default function BlogDetailPage() {
       <article className="post-content max-w-none">
         <div dangerouslySetInnerHTML={{ __html: post.content }} />
       </article>
+
+      <PostComments postId={post._id} />
 
       <section className="space-y-3">
         <h2 className="text-lg font-semibold text-foreground">Benzer yazılar</h2>

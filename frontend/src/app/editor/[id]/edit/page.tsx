@@ -1,19 +1,17 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import dynamic from "next/dynamic";
 import { useParams } from "next/navigation";
 import { api } from "@/lib/api";
 import { Button } from "@/components/ui/button";
-
-const ReactQuill = dynamic(() => import("react-quill-new"), { ssr: false });
-import "react-quill-new/dist/quill.snow.css";
+import { EditorQuill } from "@/components/editor-quill";
 
 export default function EditEditorPage() {
   const { id } = useParams<{ id: string }>();
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [status, setStatus] = useState<string>("");
+  const [coverFile, setCoverFile] = useState<File | null>(null);
 
   useEffect(() => {
     api
@@ -29,6 +27,13 @@ export default function EditEditorPage() {
     setStatus("Kaydediliyor…");
     try {
       await api.patch(`/posts/${id}`, { title, content });
+      if (coverFile) {
+        setStatus("Kapak yükleniyor…");
+        const fd = new FormData();
+        fd.append("cover", coverFile);
+        await api.post(`/posts/${id}/cover`, fd);
+        setCoverFile(null);
+      }
       setStatus("Kaydedildi");
     } catch (e: any) {
       setStatus(e?.response?.data?.error?.message || "Hata");
@@ -45,9 +50,16 @@ export default function EditEditorPage() {
           value={title}
           onChange={(e) => setTitle(e.target.value)}
         />
-        <div className="editor-quill rounded-xl border border-border bg-card">
-          <ReactQuill theme="snow" value={content} onChange={setContent} />
-        </div>
+        <label className="flex flex-col gap-1.5 text-sm text-muted-foreground">
+          <span>Kapak fotoğrafını değiştir (isteğe bağlı)</span>
+          <input
+            type="file"
+            accept="image/jpeg,image/png,image/webp"
+            className="text-xs text-foreground file:mr-2 file:rounded-lg file:border file:border-border file:bg-muted file:px-3 file:py-1.5"
+            onChange={(e) => setCoverFile(e.target.files?.[0] ?? null)}
+          />
+        </label>
+        <EditorQuill value={content} onChange={setContent} placeholder="İçerik…" />
         <Button type="button" onClick={submit}>
           Kaydet
         </Button>

@@ -1,19 +1,17 @@
 "use client";
 
 import { useMemo, useState } from "react";
-import dynamic from "next/dynamic";
 import Link from "next/link";
 import { api } from "@/lib/api";
 import { Button } from "@/components/ui/button";
-
-const ReactQuill = dynamic(() => import("react-quill-new"), { ssr: false });
-import "react-quill-new/dist/quill.snow.css";
+import { EditorQuill } from "@/components/editor-quill";
 
 export default function NewEditorPage() {
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [tags, setTags] = useState("");
   const [published, setPublished] = useState(true);
+  const [coverFile, setCoverFile] = useState<File | null>(null);
   const [status, setStatus] = useState<string>("");
 
   const tagList = useMemo(
@@ -24,13 +22,20 @@ export default function NewEditorPage() {
   async function submit() {
     setStatus("Gönderiliyor…");
     try {
-      const { data } = await api.post("/posts", {
+      const { data } = await api.post<{ post: { _id: string } }>("/posts", {
         title,
         content,
         tags: tagList,
         published,
       });
-      setStatus(`Oluşturuldu: ${data?.post?._id || ""}`);
+      const postId = data?.post?._id;
+      if (postId && coverFile) {
+        setStatus("Kapak yükleniyor…");
+        const fd = new FormData();
+        fd.append("cover", coverFile);
+        await api.post(`/posts/${postId}/cover`, fd);
+      }
+      setStatus(`Oluşturuldu: ${postId || ""}`);
     } catch (e: any) {
       setStatus(e?.response?.data?.error?.message || "Hata");
     }
@@ -62,19 +67,26 @@ export default function NewEditorPage() {
           value={tags}
           onChange={(e) => setTags(e.target.value)}
         />
+        <label className="flex flex-col gap-1.5 text-sm text-muted-foreground">
+          <span>Kapak fotoğrafı (isteğe bağlı)</span>
+          <input
+            type="file"
+            accept="image/jpeg,image/png,image/webp"
+            className="text-xs text-foreground file:mr-2 file:rounded-lg file:border file:border-border file:bg-muted file:px-3 file:py-1.5"
+            onChange={(e) => setCoverFile(e.target.files?.[0] ?? null)}
+          />
+        </label>
         <label className="flex items-center gap-2 text-sm text-muted-foreground">
           <input type="checkbox" checked={published} onChange={(e) => setPublished(e.target.checked)} />
           Yayınla
         </label>
-        <div className="editor-quill rounded-xl border border-border bg-card">
-          <ReactQuill theme="snow" value={content} onChange={setContent} />
-        </div>
+        <EditorQuill value={content} onChange={setContent} placeholder="Yazın…" />
         <Button onClick={submit} disabled={!hasToken}>
           Kaydet
         </Button>
         {status ? <div className="text-sm text-muted-foreground">{status}</div> : null}
         <p className="text-xs text-muted-foreground">
-          Not: Bu sayfa token ister. Önce backend üzerinden login olup `accessToken`’ı tarayıcı localStorage’a yazmanız gerekir.
+          Metin içi fotoğraflar için araç çubuğundaki görsel ikonunu kullan. Giriş yapmış olman gerekir.
         </p>
       </div>
     </div>

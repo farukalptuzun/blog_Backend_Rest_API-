@@ -1,25 +1,40 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { fetchMe } from "@/store/slices/auth-slice";
+import { AdminLoginForm } from "@/features/admin/admin-login-form";
 
 export default function AdminLayout({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const user = useAppSelector((s) => s.auth.user);
+  const [sessionReady, setSessionReady] = useState(false);
 
   useEffect(() => {
-    dispatch(fetchMe());
+    dispatch(fetchMe())
+      .unwrap()
+      .catch(() => {})
+      .finally(() => setSessionReady(true));
   }, [dispatch]);
 
   useEffect(() => {
-    if (user && user.role !== "admin") router.replace("/");
-  }, [router, user]);
+    if (sessionReady && user && user.role !== "admin") router.replace("/");
+  }, [router, sessionReady, user]);
 
-  if (!user) return <div className="text-sm text-muted-foreground">Kontrol ediliyor…</div>;
+  if (!sessionReady) {
+    return <div className="text-sm text-muted-foreground">Kontrol ediliyor…</div>;
+  }
+
+  if (!user) {
+    return <AdminLoginForm />;
+  }
+
+  if (user.role !== "admin") {
+    return null;
+  }
 
   return (
     <div className="grid gap-6 lg:grid-cols-4">

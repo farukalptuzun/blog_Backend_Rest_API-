@@ -4,6 +4,7 @@ const path = require('path');
 const { env } = require('./config/env');
 const { connectDb } = require('./config/db');
 const { createApp } = require('./app');
+const { ensureAdminUser } = require('./bootstrap/ensureAdminUser');
 
 async function ensureUploadDir() {
   const uploadsPath = path.resolve(process.cwd(), env.uploadDir);
@@ -13,6 +14,9 @@ async function ensureUploadDir() {
 async function main() {
   await ensureUploadDir();
   await connectDb(env.mongodbUri);
+  if (env.adminBootstrap) {
+    await ensureAdminUser();
+  }
 
   const app = createApp();
 
