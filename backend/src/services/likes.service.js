@@ -23,6 +23,31 @@ async function likePost(postId, userId) {
   return { liked: true, likeCount: post ? post.likeCount : 0 };
 }
 
+async function hasLikedPost(userId, postId) {
+  if (!mongoose.isValidObjectId(postId)) return false;
+  const row = await Like.findOne({ user: userId, targetType: 'post', targetId: postId }).select('_id').lean();
+  return !!row;
+}
+
+/** Liste öğelerine likedByMe ekler (aynı kullanıcı için toplu sorgu). */
+async function attachLikedByMeToPosts(userId, items) {
+  if (!userId || !Array.isArray(items) || items.length === 0) return items;
+  const ids = items.map((i) => i._id).filter(Boolean);
+  if (ids.length === 0) return items;
+  const likedRows = await Like.find({
+    user: userId,
+    targetType: 'post',
+    targetId: { $in: ids }
+  })
+    .select('targetId')
+    .lean();
+  const liked = new Set(likedRows.map((r) => String(r.targetId)));
+  return items.map((item) => ({
+    ...item,
+    likedByMe: liked.has(String(item._id))
+  }));
+}
+
 async function unlikePost(postId, userId) {
   if (!mongoose.isValidObjectId(postId)) throw new HttpError(400, 'Invalid post id');
   const exists = await Post.exists({ _id: postId });
@@ -74,6 +99,8 @@ module.exports = {
   likesService: {
     likePost,
     unlikePost,
+    hasLikedPost,
+    attachLikedByMeToPosts,
     likeComment,
     unlikeComment
   }

@@ -12,6 +12,8 @@ export type Post = {
   tags: string[];
   coverImageUrl?: string;
   likeCount: number;
+  /** Giriş yapılmışsa API döner */
+  likedByMe?: boolean;
   viewCount?: number;
   createdAt: string;
   author: Author;
@@ -56,6 +58,17 @@ export const fetchSimilar = createAsyncThunk("posts/similar", async (idOrSlug: s
   return data.items;
 });
 
+/** liked=true ise beğeniyi kaldır (DELETE), değilse ekle (POST) */
+export const togglePostLike = createAsyncThunk(
+  "posts/toggleLike",
+  async ({ postId, liked }: { postId: string; liked: boolean }) => {
+    const { data } = liked
+      ? await api.delete<{ liked: boolean; likeCount: number }>(`/posts/${postId}/like`)
+      : await api.post<{ liked: boolean; likeCount: number }>(`/posts/${postId}/like`);
+    return { postId, liked: data.liked, likeCount: data.likeCount };
+  }
+);
+
 const slice = createSlice({
   name: "posts",
   initialState,
@@ -86,6 +99,14 @@ const slice = createSlice({
       })
       .addCase(fetchPosts.rejected, (s) => {
         s.status = "error";
+      })
+      .addCase(togglePostLike.fulfilled, (s, a) => {
+        const { postId, liked, likeCount } = a.payload;
+        const i = s.items.findIndex((x) => x._id === postId);
+        if (i >= 0) {
+          s.items[i].likeCount = likeCount;
+          s.items[i].likedByMe = liked;
+        }
       });
   },
 });

@@ -31,8 +31,8 @@ export default function RegisterPage() {
   return (
     <div className="mx-auto max-w-md">
       <Card className="p-6">
-        <h1 className="text-2xl font-semibold tracking-tight">Kayıt ol</h1>
-        <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
+        <h1 className="text-2xl font-semibold tracking-tight text-foreground">Kayıt ol</h1>
+        <p className="mt-1 text-sm text-muted-foreground">
           Kayıt sonrası otomatik giriş yapılır.
         </p>
 
@@ -48,10 +48,10 @@ export default function RegisterPage() {
           <Button className="w-full" onClick={submit}>
             Kayıt ol
           </Button>
-          {status ? <div className="text-sm text-zinc-500">{status}</div> : null}
+          {status ? <div className="text-sm text-muted-foreground">{status}</div> : null}
         </div>
 
-        <div className="mt-6 text-sm text-zinc-600 dark:text-zinc-400">
+        <div className="mt-6 text-sm text-muted-foreground">
           Zaten hesabın var mı?{" "}
           <Link className="underline underline-offset-4" href="/login">
             Giriş yap

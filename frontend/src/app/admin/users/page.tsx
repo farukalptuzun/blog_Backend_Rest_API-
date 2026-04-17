@@ -36,11 +36,11 @@ export default function AdminUsersPage() {
 
   return (
     <div className="space-y-4">
-      <h1 className="text-2xl font-semibold tracking-tight">Kullanıcılar</h1>
-      {status ? <div className="text-sm text-zinc-500">{status}</div> : null}
-      <div className="overflow-hidden rounded-2xl border bg-white dark:bg-black">
+      <h1 className="text-2xl font-semibold tracking-tight text-foreground">Kullanıcılar</h1>
+      {status ? <div className="text-sm text-muted-foreground">{status}</div> : null}
+      <div className="overflow-hidden rounded-2xl border border-border bg-card">
         <table className="w-full text-sm">
-          <thead className="bg-zinc-50 text-left dark:bg-zinc-950">
+          <thead className="bg-muted text-left text-foreground">
             <tr>
               <th className="px-4 py-2">Email</th>
               <th className="px-4 py-2">İsim</th>
@@ -48,23 +48,23 @@ export default function AdminUsersPage() {
               <th className="px-4 py-2">İşlem</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody className="text-foreground">
             {items.map((u) => (
-              <tr key={u._id} className="border-t">
+              <tr key={u._id} className="border-t border-border">
                 <td className="px-4 py-2">{u.email}</td>
                 <td className="px-4 py-2">{u.name}</td>
                 <td className="px-4 py-2">{u.role}</td>
                 <td className="px-4 py-2">
                   <div className="flex gap-2">
                     <button
-                      className="rounded-full border px-3 py-1 hover:bg-zinc-50 dark:hover:bg-zinc-900"
+                      className="rounded-full border border-border px-3 py-1 hover:bg-muted"
                       onClick={() => setRole(u._id, "admin")}
                       type="button"
                     >
                       Admin yap
                     </button>
                     <button
-                      className="rounded-full border px-3 py-1 hover:bg-zinc-50 dark:hover:bg-zinc-900"
+                      className="rounded-full border border-border px-3 py-1 hover:bg-muted"
                       onClick={() => setRole(u._id, "user")}
                       type="button"
                     >
@@ -76,7 +76,7 @@ export default function AdminUsersPage() {
             ))}
             {items.length === 0 ? (
               <tr>
-                <td className="px-4 py-4 text-zinc-500" colSpan={4}>
+                <td className="px-4 py-4 text-muted-foreground" colSpan={4}>
                   Kayıt yok.
                 </td>
               </tr>
@@ -87,4 +87,3 @@ export default function AdminUsersPage() {
     </div>
   );
 }
-

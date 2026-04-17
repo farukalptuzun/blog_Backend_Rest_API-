@@ -8,20 +8,20 @@ import { ArrowRight, PenLine } from "lucide-react";
 export default function Home() {
   return (
     <div className="space-y-8">
-      <section className="relative overflow-hidden rounded-[28px] border bg-white p-6 shadow-sm shadow-zinc-950/5 dark:bg-black dark:shadow-zinc-950/40">
-        <div className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-gradient-to-br from-indigo-200 to-fuchsia-200 blur-3xl dark:from-indigo-500/20 dark:to-fuchsia-500/20" />
-        <div className="pointer-events-none absolute -left-24 -bottom-24 h-72 w-72 rounded-full bg-gradient-to-br from-emerald-200 to-cyan-200 blur-3xl dark:from-emerald-500/15 dark:to-cyan-500/15" />
+      <section className="relative overflow-hidden rounded-[28px] border border-border bg-card p-6 shadow-[var(--shadow-card)]">
+        <div className="pointer-events-none absolute -right-24 -top-24 h-72 w-72 rounded-full bg-gradient-to-br from-indigo-500/25 to-fuchsia-500/25 blur-3xl" />
+        <div className="pointer-events-none absolute -bottom-24 -left-24 h-72 w-72 rounded-full bg-gradient-to-br from-emerald-500/20 to-cyan-500/20 blur-3xl" />
 
         <div className="relative flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
           <div className="max-w-2xl">
-            <div className="inline-flex items-center gap-2 rounded-full border bg-white/60 px-3 py-1 text-xs text-zinc-700 dark:bg-black/40 dark:text-zinc-200">
+            <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card/80 px-3 py-1 text-xs text-foreground">
               <span className="h-2 w-2 rounded-full bg-emerald-500" />
               Canlı
             </div>
-            <h1 className="mt-3 text-4xl font-semibold tracking-tight">
+            <h1 className="mt-3 text-4xl font-semibold tracking-tight text-foreground">
               Okunabilir, hızlı ve modern bir blog deneyimi.
             </h1>
-            <p className="mt-2 text-zinc-600 dark:text-zinc-400">
+            <p className="mt-2 text-muted-foreground">
               Son yazılar, popüler içerikler, kategori/etiket filtreleri ve zengin editör.
             </p>
             <div className="mt-5 flex flex-wrap gap-2">
@@ -41,9 +41,9 @@ export default function Home() {
           </div>
 
           <div className="w-full md:w-[360px]">
-            <div className="rounded-3xl border bg-white/60 p-4 text-sm text-zinc-700 shadow-sm dark:bg-black/40 dark:text-zinc-200">
+            <div className="rounded-3xl border border-border bg-card/80 p-4 text-sm text-foreground shadow-[var(--shadow-card)]">
               <div className="font-medium">Hızlı başlangıç</div>
-              <ol className="mt-2 list-decimal space-y-1 pl-5 text-zinc-600 dark:text-zinc-400">
+              <ol className="mt-2 list-decimal space-y-1 pl-5 text-muted-foreground">
                 <li>Giriş/Kayıt ol</li>
                 <li>Bir kategori ekle (admin)</li>
                 <li>Yeni yazı oluştur</li>
@@ -59,11 +59,11 @@ export default function Home() {
 
       <section className="grid gap-6 lg:grid-cols-3">
         <div className="lg:col-span-2">
-          <h2 className="mb-3 text-lg font-semibold">Son yazılar</h2>
+          <h2 className="mb-3 text-lg font-semibold text-foreground">Son yazılar</h2>
           <PostsFeed />
         </div>
         <aside>
-          <h2 className="mb-3 text-lg font-semibold">Popüler</h2>
+          <h2 className="mb-3 text-lg font-semibold text-foreground">Popüler</h2>
           <PopularPosts />
         </aside>
       </section>

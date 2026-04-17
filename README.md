@@ -12,6 +12,8 @@ npm install
 npm run dev:backend
 ```
 
-Base URL: `http://localhost:3000/api`  
-Health: `http://localhost:3000/health`
+Backend doğrudan: `http://localhost:<PORT>/api` (`.env` içindeki `PORT`; ör. 3000 veya 4000).  
+Health: `http://localhost:<PORT>/health`
+
+**Frontend:** İstekler tarayıcıda `/api` üzerinden gider; Next.js bunları `next.config.ts` içindeki **rewrite** ile Express’e yönlendirir (varsayılan hedef `http://127.0.0.1:3000`). Backend farklı portta ise `frontend/.env.local` içine `BACKEND_URL=http://127.0.0.1:4000` yazın ve `npm run dev`’i yeniden başlatın.
 

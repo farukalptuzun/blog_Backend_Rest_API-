@@ -4,8 +4,10 @@ export function Input({ className, ...props }: React.InputHTMLAttributes<HTMLInp
   return (
     <input
       {...props}
-      className={clsx("w-full rounded-xl border bg-transparent px-3 py-2 text-sm outline-none focus:ring-2 focus:ring-zinc-300 dark:focus:ring-zinc-700", className)}
+      className={clsx(
+        "w-full rounded-xl border border-border bg-transparent px-3 py-2 text-sm text-foreground outline-none focus:ring-2 focus:ring-ring",
+        className
+      )}
     />
   );
 }
-

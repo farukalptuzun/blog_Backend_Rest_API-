@@ -19,20 +19,20 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     if (user && user.role !== "admin") router.replace("/");
   }, [router, user]);
 
-  if (!user) return <div className="text-sm text-zinc-500">Kontrol ediliyor…</div>;
+  if (!user) return <div className="text-sm text-muted-foreground">Kontrol ediliyor…</div>;
 
   return (
     <div className="grid gap-6 lg:grid-cols-4">
-      <aside className="rounded-2xl border bg-white p-4 dark:bg-black">
-        <div className="text-sm font-semibold">Admin Panel</div>
+      <aside className="rounded-2xl border border-border bg-card p-4">
+        <div className="text-sm font-semibold text-foreground">Admin Panel</div>
         <div className="mt-3 space-y-1 text-sm">
-          <Link className="block rounded-xl px-3 py-2 hover:bg-zinc-50 dark:hover:bg-zinc-950" href="/admin/posts">
+          <Link className="block rounded-xl px-3 py-2 text-foreground hover:bg-muted" href="/admin/posts">
             Yazılar
           </Link>
-          <Link className="block rounded-xl px-3 py-2 hover:bg-zinc-50 dark:hover:bg-zinc-950" href="/admin/categories">
+          <Link className="block rounded-xl px-3 py-2 text-foreground hover:bg-muted" href="/admin/categories">
             Kategoriler
           </Link>
-          <Link className="block rounded-xl px-3 py-2 hover:bg-zinc-50 dark:hover:bg-zinc-950" href="/admin/users">
+          <Link className="block rounded-xl px-3 py-2 text-foreground hover:bg-muted" href="/admin/users">
             Kullanıcılar
           </Link>
         </div>
@@ -41,4 +41,3 @@ export default function AdminLayout({ children }: { children: React.ReactNode })
     </div>
   );
 }
-

@@ -16,12 +16,19 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [status, setStatus] = useState<string>("");
 
+  function safeNextPath(): string {
+    if (typeof window === "undefined") return "/";
+    const raw = new URLSearchParams(window.location.search).get("next");
+    if (raw && raw.startsWith("/") && !raw.startsWith("//")) return raw;
+    return "/";
+  }
+
   async function submit() {
     setStatus("Giriş yapılıyor…");
     try {
       await dispatch(login({ email, password })).unwrap();
       setStatus("Tamam");
-      router.replace("/");
+      router.replace(safeNextPath());
     } catch (e: any) {
       setStatus(e?.message || "Giriş başarısız");
     }
@@ -30,8 +37,8 @@ export default function LoginPage() {
   return (
     <div className="mx-auto max-w-md">
       <Card className="p-6">
-        <h1 className="text-2xl font-semibold tracking-tight">Giriş</h1>
-        <p className="mt-1 text-sm text-zinc-600 dark:text-zinc-400">
+        <h1 className="text-2xl font-semibold tracking-tight text-foreground">Giriş</h1>
+        <p className="mt-1 text-sm text-muted-foreground">
           Admin dahil tüm kullanıcılar aynı giriş ekranını kullanır.
         </p>
 
@@ -46,10 +53,10 @@ export default function LoginPage() {
           <Button className="w-full" onClick={submit}>
             Giriş yap
           </Button>
-          {status ? <div className="text-sm text-zinc-500">{status}</div> : null}
+          {status ? <div className="text-sm text-muted-foreground">{status}</div> : null}
         </div>
 
-        <div className="mt-6 text-sm text-zinc-600 dark:text-zinc-400">
+        <div className="mt-6 text-sm text-muted-foreground">
           Hesabın yok mu?{" "}
           <Link className="underline underline-offset-4" href="/register">
             Kayıt ol

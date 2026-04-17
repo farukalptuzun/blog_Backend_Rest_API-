@@ -4,8 +4,10 @@ import { useEffect, useMemo, useRef } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
+import { getBackendOrigin } from "@/lib/api";
 import { fetchPosts } from "@/store/slices/posts-slice";
-import { Heart, Sparkles } from "lucide-react";
+import { PostLikeButton } from "@/features/posts/post-like-button";
+import { Sparkles } from "lucide-react";
 
 function stripHtml(html: string) {
   return html.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
@@ -45,27 +47,35 @@ export function PostsFeed() {
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.25, delay: Math.min(0.15, idx * 0.02) }}
-          className="group overflow-hidden rounded-3xl border bg-white shadow-sm shadow-zinc-950/5 transition hover:-translate-y-0.5 hover:shadow-md hover:shadow-zinc-950/10 dark:bg-black dark:shadow-zinc-950/40"
+          className="group relative overflow-hidden rounded-3xl border border-border bg-card shadow-[var(--shadow-card)] transition hover:-translate-y-0.5 hover:shadow-[var(--shadow-card-hover)]"
         >
-          <div className="grid gap-4 p-5 md:grid-cols-[160px_1fr] md:items-start">
-            <div className="relative h-40 overflow-hidden rounded-2xl border bg-gradient-to-br from-zinc-50 to-white dark:from-zinc-950 dark:to-black md:h-28">
+          {/* Tüm karta tıklanınca yazıya git; alt katmandaki link */}
+          <Link
+            href={`/blog/${p._id}`}
+            className="absolute inset-0 z-0"
+            aria-label={p.title}
+            tabIndex={-1}
+          />
+          {/* pointer-events-none: tıklama alttaki yazı linkine gider; kategori/etiket/beğeni için auto */}
+          <div className="relative z-[1] grid gap-4 p-5 md:grid-cols-[160px_1fr] md:items-start pointer-events-none">
+            <div className="relative h-40 overflow-hidden rounded-2xl border border-border bg-gradient-to-br from-muted to-card md:h-28">
               {p.coverImageUrl ? (
                 // eslint-disable-next-line @next/next/no-img-element
                 <img
-                  src={p.coverImageUrl.startsWith("http") ? p.coverImageUrl : `http://localhost:3000${p.coverImageUrl}`}
+                  src={p.coverImageUrl.startsWith("http") ? p.coverImageUrl : `${getBackendOrigin()}${p.coverImageUrl}`}
                   alt=""
                   className="h-full w-full object-cover transition duration-500 group-hover:scale-[1.03]"
                 />
               ) : (
-                <div className="absolute inset-0 grid place-items-center text-zinc-400">
+                <div className="absolute inset-0 grid place-items-center text-muted-foreground">
                   <Sparkles className="h-5 w-5" />
                 </div>
               )}
             </div>
 
             <div className="min-w-0">
-              <div className="flex flex-wrap items-center gap-2 text-xs text-zinc-500">
-                <span className="font-medium text-zinc-700 dark:text-zinc-200">{p.author?.name}</span>
+              <div className="flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+                <span className="font-medium text-foreground">{p.author?.name}</span>
                 <span>•</span>
                 <span>{new Date(p.createdAt).toLocaleDateString("tr-TR")}</span>
                 <span>•</span>
@@ -74,8 +84,9 @@ export function PostsFeed() {
                   <>
                     <span>•</span>
                     <Link
-                      className="rounded-full border bg-white/60 px-2 py-0.5 hover:bg-white dark:bg-black/40 dark:hover:bg-black"
+                      className="pointer-events-auto rounded-full border border-border bg-card/80 px-2 py-0.5 hover:bg-muted"
                       href={`/blog/category/${p.category.slug}`}
+                      onClick={(e) => e.stopPropagation()}
                     >
                       {p.category.name}
                     </Link>
@@ -83,13 +94,13 @@ export function PostsFeed() {
                 ) : null}
               </div>
 
-              <Link href={`/blog/${p._id}`} className="mt-2 block text-lg font-semibold leading-snug tracking-tight">
-                <span className="bg-gradient-to-b from-zinc-900 to-zinc-700 bg-clip-text text-transparent dark:from-zinc-50 dark:to-zinc-300">
+              <h2 className="mt-2 text-lg font-semibold leading-snug tracking-tight">
+                <span className="bg-gradient-to-b from-[var(--title-from)] to-[var(--title-to)] bg-clip-text text-transparent">
                   {p.title}
                 </span>
-              </Link>
+              </h2>
 
-              <p className="mt-2 line-clamp-2 text-sm leading-6 text-zinc-600 dark:text-zinc-400">
+              <p className="mt-2 line-clamp-2 text-sm leading-6 text-muted-foreground">
                 {stripHtml(p.content).slice(0, 220)}
               </p>
 
@@ -100,7 +111,8 @@ export function PostsFeed() {
                       <Link
                         key={t}
                         href={`/blog/tag/${encodeURIComponent(t)}`}
-                        className="rounded-full bg-zinc-100 px-2 py-1 text-xs text-zinc-700 hover:bg-zinc-200 dark:bg-zinc-900 dark:text-zinc-200 dark:hover:bg-zinc-800"
+                        className="pointer-events-auto rounded-full bg-muted px-2 py-1 text-xs text-foreground hover:bg-muted/80"
+                        onClick={(e) => e.stopPropagation()}
                       >
                         #{t}
                       </Link>
@@ -110,10 +122,13 @@ export function PostsFeed() {
                   <span />
                 )}
 
-                <div className="inline-flex items-center gap-1 rounded-full border bg-white/60 px-3 py-1 text-xs text-zinc-700 dark:bg-black/40 dark:text-zinc-200">
-                  <Heart className="h-3.5 w-3.5" />
-                  {p.likeCount}
-                </div>
+                <PostLikeButton
+                  postId={p._id}
+                  likeCount={p.likeCount}
+                  likedByMe={p.likedByMe}
+                  size="sm"
+                  className="pointer-events-auto"
+                />
               </div>
             </div>
           </div>
@@ -124,9 +139,8 @@ export function PostsFeed() {
       ))}
 
       <div ref={sentinelRef} />
-      {status === "loading" ? <div className="text-sm text-zinc-500">Yükleniyor…</div> : null}
-      {!hasMore && items.length > 0 ? <div className="text-sm text-zinc-500">Hepsi bu kadar.</div> : null}
+      {status === "loading" ? <div className="text-sm text-muted-foreground">Yükleniyor…</div> : null}
+      {!hasMore && items.length > 0 ? <div className="text-sm text-muted-foreground">Hepsi bu kadar.</div> : null}
     </div>
   );
 }
-

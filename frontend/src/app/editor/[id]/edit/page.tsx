@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import dynamic from "next/dynamic";
 import { useParams } from "next/navigation";
 import { api } from "@/lib/api";
+import { Button } from "@/components/ui/button";
 
 const ReactQuill = dynamic(() => import("react-quill-new"), { ssr: false });
 import "react-quill-new/dist/quill.snow.css";
@@ -36,27 +37,22 @@ export default function EditEditorPage() {
 
   return (
     <div className="space-y-4">
-      <h1 className="text-2xl font-semibold tracking-tight">Yazıyı düzenle</h1>
-      <div className="space-y-3 rounded-2xl border bg-white p-4 dark:bg-black">
+      <h1 className="text-2xl font-semibold tracking-tight text-foreground">Yazıyı düzenle</h1>
+      <div className="space-y-3 rounded-2xl border border-border bg-card p-4">
         <input
-          className="w-full rounded-xl border px-3 py-2 bg-transparent"
+          className="w-full rounded-xl border border-border bg-transparent px-3 py-2 text-foreground outline-none focus:ring-2 focus:ring-ring"
           placeholder="Başlık"
           value={title}
           onChange={(e) => setTitle(e.target.value)}
         />
-        <div className="rounded-xl border bg-white dark:bg-black">
+        <div className="editor-quill rounded-xl border border-border bg-card">
           <ReactQuill theme="snow" value={content} onChange={setContent} />
         </div>
-        <button
-          type="button"
-          onClick={submit}
-          className="inline-flex items-center justify-center rounded-full bg-zinc-900 px-4 py-2 text-sm font-medium text-white hover:bg-zinc-800 dark:bg-zinc-100 dark:text-zinc-900 dark:hover:bg-zinc-200"
-        >
+        <Button type="button" onClick={submit}>
           Kaydet
-        </button>
-        {status ? <div className="text-sm text-zinc-500">{status}</div> : null}
+        </Button>
+        {status ? <div className="text-sm text-muted-foreground">{status}</div> : null}
       </div>
     </div>
   );
 }
-

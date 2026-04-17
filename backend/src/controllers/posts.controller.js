@@ -18,11 +18,19 @@ const postsController = {
   async list(req, res) {
     const { skip, limit, page } = parsePagination(req.query);
     const { items, total } = await postsService.listPosts(req.query, { skip, limit });
-    res.json({ items, page, limit, total });
+    let out = items;
+    if (req.user) {
+      out = await likesService.attachLikedByMeToPosts(req.user._id, items);
+    }
+    res.json({ items: out, page, limit, total });
   },
 
   async getByIdOrSlug(req, res) {
     const post = await postsService.getPostByIdOrSlug(req.params.idOrSlug);
+    if (req.user) {
+      const likedByMe = await likesService.hasLikedPost(req.user._id, post._id);
+      return res.json({ post: { ...post, likedByMe } });
+    }
     res.json({ post });
   },
 

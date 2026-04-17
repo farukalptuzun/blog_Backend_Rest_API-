@@ -17,7 +17,7 @@ export default function CategoryPage() {
 
   return (
     <div className="space-y-4">
-      <h1 className="text-2xl font-semibold tracking-tight">Kategori: {slug}</h1>
+      <h1 className="text-2xl font-semibold tracking-tight text-foreground">Kategori: {slug}</h1>
       <PostsFeed />
     </div>
   );

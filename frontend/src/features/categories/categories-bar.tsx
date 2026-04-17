@@ -1,7 +1,7 @@
 "use client";
 
-import { useEffect } from "react";
 import Link from "next/link";
+import { useEffect } from "react";
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
 import { fetchCategories } from "@/store/slices/categories-slice";
 
@@ -17,7 +17,7 @@ export function CategoriesBar() {
     <div className="flex flex-wrap gap-2">
       <Link
         href="/blog"
-        className="rounded-full border bg-white px-3 py-1.5 text-sm hover:bg-zinc-50 dark:bg-black dark:hover:bg-zinc-900"
+        className="rounded-full border border-border bg-card px-3 py-1.5 text-sm hover:bg-muted"
       >
         Tümü
       </Link>
@@ -25,13 +25,12 @@ export function CategoriesBar() {
         <Link
           key={c._id}
           href={`/blog/category/${c.slug}`}
-          className="rounded-full border bg-white px-3 py-1.5 text-sm hover:bg-zinc-50 dark:bg-black dark:hover:bg-zinc-900"
+          className="rounded-full border border-border bg-card px-3 py-1.5 text-sm hover:bg-muted"
         >
           {c.name}
         </Link>
       ))}
-      {status === "loading" ? <span className="text-sm text-zinc-500">Yükleniyor…</span> : null}
+      {status === "loading" ? <span className="text-sm text-muted-foreground">Yükleniyor…</span> : null}
     </div>
   );
 }
-

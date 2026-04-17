@@ -1,16 +1,16 @@
 const express = require('express');
 
 const { asyncHandler } = require('../middlewares/asyncHandler');
-const { requireAuth } = require('../middlewares/auth');
+const { requireAuth, optionalAuth } = require('../middlewares/auth');
 const { upload } = require('../middlewares/upload');
 const { postsController } = require('../controllers/posts.controller');
 
 const router = express.Router();
 
 router.post('/', requireAuth, asyncHandler(postsController.create));
-router.get('/', asyncHandler(postsController.list));
+router.get('/', optionalAuth, asyncHandler(postsController.list));
 router.get('/:idOrSlug/similar', asyncHandler(postsController.similar));
-router.get('/:idOrSlug', asyncHandler(postsController.getByIdOrSlug));
+router.get('/:idOrSlug', optionalAuth, asyncHandler(postsController.getByIdOrSlug));
 router.patch('/:id', requireAuth, asyncHandler(postsController.update));
 router.delete('/:id', requireAuth, asyncHandler(postsController.remove));
 router.post(

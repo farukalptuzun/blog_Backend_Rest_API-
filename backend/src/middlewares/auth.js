@@ -28,5 +28,19 @@ async function requireAuth(req, res, next) {
   }
 }
 
-module.exports = { requireAuth };
+/** Token varsa req.user doldurur; yoksa veya geçersizse sessizce devam eder (liste/detay için). */
+async function optionalAuth(req, res, next) {
+  try {
+    const token = getBearerToken(req);
+    if (!token) return next();
+    const payload = jwt.verify(token, env.jwtAccessSecret);
+    const user = await User.findById(payload.sub).select('-passwordHash');
+    if (user) req.user = user;
+  } catch {
+    /* geçersiz token: giriş yokmuş gibi devam */
+  }
+  next();
+}
+
+module.exports = { requireAuth, optionalAuth };
 

@@ -17,7 +17,7 @@ export default function TagPage() {
 
   return (
     <div className="space-y-4">
-      <h1 className="text-2xl font-semibold tracking-tight">#{decodeURIComponent(tag)}</h1>
+      <h1 className="text-2xl font-semibold tracking-tight text-foreground">#{decodeURIComponent(tag)}</h1>
       <PostsFeed />
     </div>
   );
